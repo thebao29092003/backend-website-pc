@@ -15,10 +15,14 @@ import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
 
-//    loadUserByUsername: tên method được Spring Security gọi khi cần xác thực người dùng.
+    private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    //    loadUserByUsername: tên method được Spring Security gọi khi cần xác thực người dùng.
 //    username mình dùng ở đây là email luôn
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

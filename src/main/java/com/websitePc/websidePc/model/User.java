@@ -46,12 +46,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = true)
-    private String OTP;
-
-//    LocalDateTime: bao gồm cả ngày và giờ, thường dùng để lưu trữ thời gian chính xác hơn.
-    @Column(nullable = true)
-    private LocalDateTime OTP_create_at;
+    @OneToOne(mappedBy = "user")
+    private ForgotPassword forgotPassword;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user", fetch = FetchType.EAGER)
     private Collection<Orders> orders;

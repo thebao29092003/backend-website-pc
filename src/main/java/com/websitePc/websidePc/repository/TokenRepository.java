@@ -30,7 +30,6 @@ public class TokenRepository {
     @Value("${app.jwt.refresh-expiration}")
     private long  refreshTokenExpiration;
 
-    @Autowired
     public TokenRepository(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }

@@ -31,6 +31,10 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         } else if("REGISTER_FAILED".equals(ex.getErrorType())) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        } else if("INVALID_EMAIL".equals(ex.getErrorType())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        } else if("INVALID_OTP".equals(ex.getErrorType())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error");
     }

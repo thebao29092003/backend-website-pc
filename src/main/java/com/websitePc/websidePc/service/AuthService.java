@@ -12,7 +12,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,18 +27,27 @@ import java.util.Map;
 @Service
 public class AuthService {
 
-    @Autowired
-    private TokenRepository tokenRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private UserDetailsService userDetailsService;
+
+    private final TokenRepository tokenRepository;
+
+    private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtService jwtService;
+
+    private final UserDetailsService userDetailsService;
+
+    public AuthService(TokenRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, UserDetailsService userDetailsService) {
+        this.tokenRepository = tokenRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
 
 
     @Transactional
