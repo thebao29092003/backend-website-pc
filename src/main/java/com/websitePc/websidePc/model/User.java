@@ -7,13 +7,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email"),
@@ -54,7 +54,7 @@ public class User {
     private LocalDateTime OTP_create_at;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user", fetch = FetchType.EAGER)
-    private Collection<Order> orders;
+    private Collection<Orders> orders;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user", fetch = FetchType.EAGER)
     private Collection<Review> reviews;

@@ -18,7 +18,7 @@ public class OrderProduct {
     @ManyToOne
     @MapsId("orderId") // tham chiếu đến trường orderId trong OrderProductId
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Orders order;
 
     @ManyToOne
     @MapsId("productId") // tham chiếu đến trường productId trong OrderProductId
