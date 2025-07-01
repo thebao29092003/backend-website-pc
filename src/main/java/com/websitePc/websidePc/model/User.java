@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -21,21 +23,22 @@ import java.util.Date;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
-    private String password;
-
-    @CreationTimestamp
-    private Date createAt;
+    private String fullName;
 
     @Column(nullable = false)
-    private String fullName;
+    private String password;
+
+//    localDate: chỉ bao gồm ngày, không có giờ
+    @CreationTimestamp
+    private LocalDate createAt;
 
     @Column(nullable = false)
     private String phone;
@@ -46,8 +49,18 @@ public class User {
     @Column(nullable = true)
     private String OTP;
 
+//    LocalDateTime: bao gồm cả ngày và giờ, thường dùng để lưu trữ thời gian chính xác hơn.
     @Column(nullable = true)
     private LocalDateTime OTP_create_at;
+
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user", fetch = FetchType.EAGER)
+    private Collection<Order> orders;
+
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user", fetch = FetchType.EAGER)
+    private Collection<Review> reviews;
+
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user", fetch = FetchType.EAGER)
+    private Collection<Cart> carts;
 
     public User(String email, String password,Role role,String fullName, String phone) {
         this.email = email;
@@ -57,5 +70,4 @@ public class User {
         this.phone = phone;
 
     }
-
 }
