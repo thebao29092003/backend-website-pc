@@ -14,12 +14,6 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "email"),
-                @UniqueConstraint(columnNames = "phone")
-        }
-)
 public class User {
 
     @Id

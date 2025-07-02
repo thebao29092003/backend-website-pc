@@ -55,7 +55,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     request.getRequestURI().contains("/api/auth/") ||
                             request.getRequestURI().contains("/oauth2") ||
                             request.getRequestURI().contains("/favicon.ico") ||
-                            request.getRequestURI().contains("/login")
+                            request.getRequestURI().contains("/login")||
+                            request.getRequestURI().contains("/api/forgot-password")
             ) {
                 filterChain.doFilter(request, response); // If no JWT, continue the filter chain
                 return;

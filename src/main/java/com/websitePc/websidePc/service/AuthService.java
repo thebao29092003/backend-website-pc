@@ -56,6 +56,9 @@ public class AuthService {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new ApplicationException("EMAIL_TAKEN", "Email is already taken");
         }
+        if (userRepository.existsByPhone(registerRequest.getPhone())) {
+            throw new ApplicationException("PHONE_TAKEN", "Phone is already taken");
+        }
 
 //        System.out.println("Registering user: " + registerRequest.getFullName());
 

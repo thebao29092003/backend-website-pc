@@ -35,7 +35,10 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         } else if("INVALID_OTP".equals(ex.getErrorType())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        } else if("PHONE_TAKEN".equals(ex.getErrorType())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error");
     }
 }

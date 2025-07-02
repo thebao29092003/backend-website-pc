@@ -88,7 +88,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(
                                 "/api/auth/**", "/oauth2/**", "/login/oauth2/code/google",
-                                "/favicon.ico", "/login/**")
+                                "/favicon.ico", "/login/**", "/api/forgot-password/**")
                         .permitAll()
                         .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các yêu cầu khác
                 )
