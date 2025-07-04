@@ -29,11 +29,6 @@ public class AuthController {
         return ResponseEntity.ok("User registered successfully");
     }
 
-//    @PostMapping("/verifyEmail")
-//    public ResponseEntity<String> verifyEmail22() {
-//        return ResponseEntity.ok("Hello from forgot password controller");
-//    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         return authService.login(loginRequest, response);

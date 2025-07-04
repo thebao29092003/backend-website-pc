@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -35,5 +36,8 @@ public class Component {
     private String componentType;
 
     private Integer componentInStock;
+
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "component", fetch = FetchType.EAGER)
+    private Collection<ProductComponent> productComponents;
 
 }
