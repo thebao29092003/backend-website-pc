@@ -25,4 +25,8 @@ public class ProductService {
     public Page<Object[]> categoryCpuVga(int page, int size, String componentType, String componentName) {
         return productRepository.categoryCpuVga(PageRequest.of(page, size), componentType, componentName);
     }
+
+    public Page<Object[]> findProductByName(int page, int size, String productName) {
+        return productRepository.findProductByName(PageRequest.of(page, size), productName);
+    }
 }

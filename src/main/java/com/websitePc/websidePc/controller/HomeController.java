@@ -44,10 +44,7 @@ public class HomeController {
         int size = 10;
         // Lấy TRANG HIỆN TẠI, không lặp qua các trang trước
         Page<Object[]> productPage = productService.listLaptopNew(pageNo, size);
-
-        Map<String, Object> response = getResponse(pageNo, productPage);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(getResponse(pageNo, productPage));
     }
 
     @GetMapping("/category")
@@ -59,9 +56,17 @@ public class HomeController {
         int size = 10;
         // Lấy TRANG HIỆN TẠI, không lặp qua các trang trước
         Page<Object[]> productPage = productService.categoryCpuVga(pageNo, size, componentType, componentName);
+        return ResponseEntity.ok(getResponse(pageNo, productPage));
+    }
 
-        Map<String, Object> response = getResponse(pageNo, productPage);
-
-        return ResponseEntity.ok(response);
+    @GetMapping("/searchByName")
+    public ResponseEntity<?> findProductByName(
+            @RequestParam("pageNo") int pageNo,
+            @RequestParam("productName") String productName
+    ) {
+        int size = 10;
+        // Lấy TRANG HIỆN TẠI, không lặp qua các trang trước
+        Page<Object[]> productPage = productService.findProductByName(pageNo, size, productName);
+        return ResponseEntity.ok(getResponse(pageNo, productPage));
     }
 }

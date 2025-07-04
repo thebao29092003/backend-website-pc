@@ -7,8 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
 //    sản phẩm pc hoặc laptop mới nhất
     @Query(value = """
         SELECT
@@ -54,4 +57,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 String componentType,
                 String componentName
         );
+
+    //    cấu hình theo vga hoặc cpu
+//    Sử dụng CONCAT để tạo mẫu tìm kiếm động (thêm ký tự % vào trước và sau :componentName).
+    @Query(value = """
+       SELECT p.product_id, p.product_name, p.product_price, GROUP_CONCAT(i.img_link SEPARATOR ", ") as img_link
+       FROM product p
+       LEFT JOIN img i ON p.product_id = i.product_id
+       WHERE p.product_name LIKE CONCAT('%', :productName, '%')
+       GROUP BY p.product_id
+       """,
+            nativeQuery = true)
+    Page<Object[]> findProductByName(
+            Pageable pageable,
+            String productName
+    );
 }
