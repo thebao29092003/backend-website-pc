@@ -5,7 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,15 +28,40 @@ public class HomeController {
         return response;
     }
 
+    @GetMapping("/recommend")
+    public ResponseEntity<?> getProductByPrice(
+            @RequestParam("productId") Long productId,
+            @RequestParam("price") BigDecimal price,
+            @RequestParam("type") String type
+            )
+    {
+
+        List<Object[]> product =  productService.recommendByPrice(
+                productId,
+                price,
+                BigDecimal.valueOf(5000000),
+                type);
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("productDetail", product);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/detail/product/{productId}")
+    public ResponseEntity<?> getDetailProduct(@PathVariable Long productId) {
+        Object product =  productService.getProductById(productId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("productDetail", product);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/pcListNew/{pageNo}")
     public ResponseEntity<?> pcListNew(@PathVariable int pageNo) {
         int size = 10;
         // Lấy TRANG HIỆN TẠI, không lặp qua các trang trước
         Page<Object[]> productPage = productService.listPcNew(pageNo, size);
-
         Map<String, Object> response = getResponse(pageNo, productPage);
-
         return ResponseEntity.ok(response);
     }
 

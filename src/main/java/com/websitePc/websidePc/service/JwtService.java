@@ -39,7 +39,31 @@ public class JwtService {
 
 //    generate access token
     public String generateAccessToken(Authentication authentication) {
-        return generateToken(authentication, jwtExpirationMs, new HashMap<>());
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//        System.out.println("userDetails" + userDetails + " is generating access token");
+
+        Map<String, String> claims = new HashMap<>();
+        claims.put("email", userDetails.getUsername());
+
+    /*
+    - userDetails.getAuthorities():
+    Lấy danh sách các quyền (authorities) của người dùng
+    Trả về một Collection các GrantedAuthority
+    - .iterator():
+    Tạo một Iterator để duyệt qua collection các quyền
+    Iterator giúp truy cập tuần tự các phần tử trong collection
+    - .next():
+    Lấy phần tử đầu tiên từ Iterator
+    Trả về đối tượng GrantedAuthority đầu tiên
+    - .toString():
+    Chuyển đối tượng GrantedAuthority thành chuỗi String
+    Thường trả về dạng "ROLE_XXX" (ví dụ: "ROLE_ADMIN", "ROLE_USER")
+    * */
+        claims.put("role", userDetails.getAuthorities().isEmpty() ?
+                "ROLE_USER" :
+                userDetails.getAuthorities().iterator().next().toString());
+        return generateToken(authentication, jwtExpirationMs, claims);
     }
 
     //    generate refresh token

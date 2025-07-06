@@ -38,6 +38,13 @@ public class Product {
     @Column(nullable = false)
     private String productType;
 
+//    khi tạo product mới thì nó sẽ tự động là "TRUE"
+//    Khi muốn xóa product thì sẽ set thành "FALSE" (để khỏi hiển thị len trang web)
+//    thay vì mình xóa hẳn product khỏi database. Bởi vì khi xóa hẳn thì sẽ mất dữ liệu
+//    và phải xóa đi rất nhiều bản ghi liên quan đến product này
+    @Column
+    private String productActive;
+
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "product", fetch = FetchType.EAGER)
     private Collection<OrderProduct> orderProducts;
 
