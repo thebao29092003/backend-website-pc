@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,12 +45,5 @@ public class AuthController {
         responseBody.put("accessToken", tokenPair.getAccessToken());
         return ResponseEntity.ok(responseBody);
     }
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        authService.logout(request, response);
-        return ResponseEntity.ok("Logged out successfully");
-    }
-
 
 }

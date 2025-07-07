@@ -57,36 +57,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             request.getRequestURI().contains("/favicon.ico") ||
                             request.getRequestURI().contains("/login")||
                             request.getRequestURI().contains("/api/forgot-password")||
-                            request.getRequestURI().contains("/api/public") ||
-                            request.getRequestURI().contains("/laptop1.png")
+                            request.getRequestURI().contains("/api/public")
             ) {
                 filterChain.doFilter(request, response); // If no JWT, continue the filter chain
                 return;
             }
             // Set 401 Unauthorized status nếu ko có token
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
+        } else{
+            try {
+                // Nếu có token, lấy ra từ header Authorization
+                // Ví dụ
+                jwt = getJwtFromHeader(request);
+                if(tokenRepository.isAccessTokenBlacklisted(jwt)){
+                    throw new ApplicationException("TOKEN_INVALID", "Token is blacklisted");
+                }
 
-        //      Việc kiểm tra token có hợp lệ hay không sẽ được thực hiện trong JwtService
-        jwt = getJwtFromHeader(request);
+                //      Việc kiểm tra token có hợp lệ hay không sẽ được thực hiện trong JwtService
+                email = jwtService.extractEmailFromToken(jwt);
 
-        if(tokenRepository.isAccessTokenBlacklisted(jwt)){
-            throw new ApplicationException("TOKEN_INVALID", "Token is blacklisted");
-        }
-
-        email = jwtService.extractEmailFromToken(jwt);
-
-        // If the email != null and the user is not authenticated
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-            if (jwtService.validateTokenForUser(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                // If the email != null and the user is not authenticated
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                    if (jwtService.validateTokenForUser(jwt, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails,
+                                        null,
+                                        userDetails.getAuthorities()
+                                );
 
 //                authToken.setDetails Mục đích:
 //                      Khi login lần đầu, Spring Security tự động xử lý việc này trong quá trình xác thực
@@ -99,14 +98,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //                      Giúp theo dõi và ghi log về nguồn gốc request
 //                      Hữu ích cho việc kiểm tra bảo mật
 //                      Cho phép truy cập thông tin request trong các bộ lọc bảo mật khác
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                // Set the authentication in the security context
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-                filterChain.doFilter(request, response); // Continue the filter chain
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request)
+                        );
+                        // Set the authentication in the security context
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                        filterChain.doFilter(request, response); // Continue the filter chain
+                    }
+                }
+            } catch (ApplicationException e) {
+                // Xử lý lỗi token không hợp lệ (bao gồm token hết hạn)
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"errorType\": \"" + e.getErrorType() + "\", \"message\": \"" + e.getMessage() + "\"}");
             }
+
         }
+
+
     }
 
     private String getJwtFromHeader(HttpServletRequest request) {

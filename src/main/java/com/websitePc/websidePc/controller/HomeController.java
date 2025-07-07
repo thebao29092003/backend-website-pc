@@ -1,5 +1,6 @@
 package com.websitePc.websidePc.controller;
 
+import com.websitePc.websidePc.service.ComponentService;
 import com.websitePc.websidePc.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,11 @@ import java.util.Map;
 public class HomeController {
 
     private final ProductService productService;
+    private final ComponentService componentService;
 
-    public HomeController(ProductService productService) {
+    public HomeController(ProductService productService, ComponentService componentService) {
         this.productService = productService;
+        this.componentService = componentService;
     }
 
     private static Map<String, Object> getResponse(int pageNo, Page<Object[]> productPage) {
@@ -50,9 +53,11 @@ public class HomeController {
     @GetMapping("/detail/product/{productId}")
     public ResponseEntity<?> getDetailProduct(@PathVariable Long productId) {
         Object product =  productService.getProductById(productId);
+        List <Object> component = componentService.getComponentByProductId(productId);
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
         response.put("productDetail", product);
+        response.put("component", component);
         return ResponseEntity.ok(response);
     }
 
