@@ -50,7 +50,7 @@ public class User {
     private Collection<Review> reviews;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user", fetch = FetchType.EAGER)
-    private Collection<Cart> carts;
+    private Collection<UserProduct> userProducts;
 
     public User(String email, String password,Role role,String fullName, String phone) {
         this.email = email;

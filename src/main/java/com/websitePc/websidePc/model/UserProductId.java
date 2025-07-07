@@ -1,7 +1,6 @@
 package com.websitePc.websidePc.model;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
 import lombok.*;
 
 @Data
@@ -9,7 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-public class CartProductId {
+public class UserProductId {
+//    phải trung kiểu dữ liệu của productId trong bảng Product
     private Long productId;
-    private Long cartId;
+    private String userId;
 }

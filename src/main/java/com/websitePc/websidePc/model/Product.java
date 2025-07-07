@@ -49,7 +49,7 @@ public class Product {
     private Collection<OrderProduct> orderProducts;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "product", fetch = FetchType.EAGER)
-    private Collection<CartProduct> cartProducts;
+    private Collection<UserProduct> userProducts;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "product", fetch = FetchType.EAGER)
     private Collection<Review> reviews;

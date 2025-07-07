@@ -11,19 +11,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartProduct {
+public class UserProduct {
     @EmbeddedId
-    private CartProductId id; //composite key
+    private UserProductId id; //composite key
 
     @ManyToOne
-    @MapsId("cartId") // tham chiếu đến trường cartId trong CartProductId
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
-
-    @ManyToOne
-    @MapsId("productId") // tham chiếu đến trường cartId trong CartProductId
+    @MapsId("productId") // tham chiếu đến trường cartId trong UserProductId
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @ManyToOne
+    @MapsId("userId") // tham chiếu đến trường userId trong UserProductId
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     private Integer quantity;
 }
