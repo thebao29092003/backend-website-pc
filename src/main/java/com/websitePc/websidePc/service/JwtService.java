@@ -2,6 +2,8 @@ package com.websitePc.websidePc.service;
 
 import com.websitePc.websidePc.dto.TokenPair;
 import com.websitePc.websidePc.exception.ApplicationException;
+import com.websitePc.websidePc.model.User;
+import com.websitePc.websidePc.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -15,9 +17,11 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class JwtService {
+    private final UserRepository userRepository;
 
 //    lấy giá trị từ application.properties
     @Value("${app.jwt.secret}")
@@ -28,6 +32,10 @@ public class JwtService {
 
     @Value("${app.jwt.refresh-expiration}")
     private long refreshTokenExpirationMs;
+
+    public JwtService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
 
     public TokenPair generateTokenPair(Authentication authentication) {
@@ -43,8 +51,10 @@ public class JwtService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 //        System.out.println("userDetails" + userDetails + " is generating access token");
 
+//        username chính là email của người dùng
         Map<String, String> claims = new HashMap<>();
-        claims.put("email", userDetails.getUsername());
+        Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+        claims.put("userId", user.get().getUserId());
 
     /*
     - userDetails.getAuthorities():
