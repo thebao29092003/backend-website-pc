@@ -137,6 +137,7 @@ public class AuthService {
         cookie.setHttpOnly(true); // Prevents JavaScript access to the cookie
         cookie.setPath("/"); // Makes the cookie accessible across the entire application
         cookie.setMaxAge(60 * 60 * 24 * 7); // Sets the cookie to expire in 7 days
+        cookie.setSecure(false);
         response.addCookie(cookie);
     }
 
@@ -200,6 +201,7 @@ public class AuthService {
             username = authentication.getPrincipal().toString();
         }
 
+        System.out.println("username in logout: " + username);
 
 //        tìm và xóa cookie refreshToken
         Cookie[] cookies = request.getCookies();

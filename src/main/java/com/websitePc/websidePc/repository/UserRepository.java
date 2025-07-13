@@ -28,19 +28,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
                    JOIN orders o ON o.user_id = u.user_id
                    JOIN order_product op ON op.order_id = o.order_id
                    JOIN product p ON p.product_id = op.product_id
-                   WHERE u.email = :email AND p.product_id = :productId
+                   WHERE u.user_id = :userId AND p.product_id = :productId
                    LIMIT 1
                ) AS has_purchased;
         """, nativeQuery = true)
-    Long hasUserBuyProduct (String email, Long productId);
+    Long hasUserBuyProduct (String userId, Long productId);
 
 // này để truy vấn sản phẩm và số lượng theo userId (giống như giỏ hàng)
-//    quantity là số lượng sản phẩm mà user đã bỏ vào giỏ hàng
+//    up.quantity là số lượng sản phẩm mà user đã bỏ vào giỏ hàng
+//    còn p.product_in_stock là số lượng hàng tồn kho
     @Query(value = """
           SELECT
                     p.product_id,
                     p.product_name,
                     p.product_price,
+                    p.product_in_stock,
                     (SELECT i.img_link FROM img i WHERE i.product_id = p.product_id LIMIT 1) AS img_link,
                     up.quantity
                     FROM user_product up

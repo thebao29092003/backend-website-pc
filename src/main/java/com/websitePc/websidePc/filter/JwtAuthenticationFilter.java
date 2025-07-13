@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,29 +42,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-//        Intercept the request
+        //        Intercept the request
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String email;
 
+
+        System.out.println("method: " + request.getMethod());
+        System.out.println("method: " + request.getRequestURI());
+        System.out.println("request doFilterInternal: " + authHeader);
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println(request.getRequestURI());
-//            nếu request không chứa header Authorization trong lúc đăng nhập, đăng kí
-//            (bằng username password và của google) thì mình
-//            sẽ cho phép request đó đi qua mà không cần xác thực JWT
-            if (
-                    request.getRequestURI().contains("/api/auth/") ||
-                            request.getRequestURI().contains("/oauth2") ||
-                            request.getRequestURI().contains("/favicon.ico") ||
-                            request.getRequestURI().contains("/login")||
-                            request.getRequestURI().contains("/api/forgot-password")||
-                            request.getRequestURI().contains("/api/public")
-            ) {
-                filterChain.doFilter(request, response); // If no JWT, continue the filter chain
-                return;
-            }
-            // Set 401 Unauthorized status nếu ko có token
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            filterChain.doFilter(request, response); // If no JWT, continue the filter chain
         } else{
             try {
                 // Nếu có token, lấy ra từ header Authorization

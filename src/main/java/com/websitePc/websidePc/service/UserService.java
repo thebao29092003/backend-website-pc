@@ -18,8 +18,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Long hasUserBuyProduct(String email, Long productId) {
-        return userRepository.hasUserBuyProduct(email, productId);
+    public Long hasUserBuyProduct(String userId, Long productId) {
+        return userRepository.hasUserBuyProduct(userId, productId);
     }
 
     public List<Object[]> productByUserId(String userId) {
@@ -46,6 +46,8 @@ public class UserService {
 
     @Transactional
     public void deleteCartItem(JsonNode cartItemData) {
+
+        System.out.println("cartItemData: " + cartItemData);
         //  Chuyển sang String
         Long productId = cartItemData.get("productId").asLong();
         String userId = cartItemData.get("userId").asText();

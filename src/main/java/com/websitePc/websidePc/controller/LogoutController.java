@@ -5,12 +5,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //vì logout cần xác thực người dùng đã đăng nhập, nên tách ra khỏi AuthController
+//logout tuy cần token nhưng ban đầu nó gửi prelight để xem có cross hay không nên
+// nên trong securityConfig mình phải cho nó permitAll()
 @RestController
 @RequestMapping("/api")
 public class LogoutController {
@@ -26,7 +28,7 @@ public class LogoutController {
                                     HttpServletResponse response
     ) {
         authService.logout(request, response);
-        return ResponseEntity.ok("Logged out successfully");
+        return ResponseEntity.ok(Map.of("status", 200));
     }
 
 }

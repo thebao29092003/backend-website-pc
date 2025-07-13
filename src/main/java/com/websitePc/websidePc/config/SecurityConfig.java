@@ -89,7 +89,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**", "/oauth2/**", "/login/oauth2/code/google",
                                 "/favicon.ico", "/login/**", "/api/forgot-password/**",
-                                "/api/public/**")
+                                "/api/public/**", "api/logout")
                         .permitAll()
                         .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các yêu cầu khác
                 )

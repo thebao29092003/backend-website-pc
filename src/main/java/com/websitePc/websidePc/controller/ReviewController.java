@@ -87,11 +87,11 @@ public class ReviewController {
 
     @GetMapping("/hasUserBuyProduct")
     public ResponseEntity<?> hasUserBuyProduct(
-            @RequestParam(value = "email") String email,
+            @RequestParam(value = "userId") String userId,
             @RequestParam(value = "productId") Long productId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Long hasBuyProduct =  userService.hasUserBuyProduct(email, productId);
+            Long hasBuyProduct =  userService.hasUserBuyProduct(userId, productId);
             response.put("status", "success");
             if(hasBuyProduct == 1) {
                 response.put("hasBuyProduct", true);

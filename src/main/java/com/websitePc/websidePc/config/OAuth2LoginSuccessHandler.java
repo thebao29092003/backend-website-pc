@@ -106,6 +106,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         cookie.setHttpOnly(true);
 //        Đặt thời gian sống cho cookie là 7 ngày
         cookie.setMaxAge(60*60*24*7);
+        cookie.setPath("/");
+        cookie.setSecure(false);
 //        add cookie vào response
         response.addCookie(cookie);
 
