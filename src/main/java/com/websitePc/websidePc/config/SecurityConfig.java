@@ -96,9 +96,9 @@ public class SecurityConfig {
 
 //                cấu hình để đăng nhập bằng google
 //                khi dang nhập thành công, sẽ gọi oAuth2LoginSuccessHandler để xử lý
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2LoginSuccessHandler)
-                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .successHandler(oAuth2LoginSuccessHandler)
+//                )
 
 
                 // Thêm JwtAuthenticationFilter vào chuỗi bộ lọc trước UsernamePasswordAuthenticationFilter
