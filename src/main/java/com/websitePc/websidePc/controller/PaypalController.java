@@ -1,6 +1,8 @@
 package com.websitePc.websidePc.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
@@ -11,11 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -42,60 +46,42 @@ public class PaypalController {
             String cancelUrl = "http://localhost:5173";
             String successUrl = "http://localhost:5173/payment";
 
-            String userId = orderData.get("userId").toString();
-            BigDecimal totalVND = new BigDecimal(orderData.get("totalVND").toString());
-            List<Long> productIds = new ArrayList<>();
-            List<Integer> quantities = new ArrayList<>();
-
-//            đang xử lí
-            JsonNode productIdQuantity = orderData.get("productIdQuantity");
-//            productIds trả về mảng object có productId làm ket và value là quantity
-//            [{64: 3}, {55: 10}]
-
-            String des = orderData.get("des").toString();
-
+            String userId = orderData.get("userId").asText();
+            JsonNode productListInput = orderData.get("productList");
             System.out.println("userId: "+ userId);
-            System.out.println("totalVND: "+ totalVND);
-            System.out.println("productIdQuantity: "+ productIdQuantity);
-            System.out.println("des: "+ des);
+//            [
+//            {"productId":65,"quantityUserBuy":1,"price":42000000,"des":"PC Intel Core i9 RTX 3090"},
+//            {"productId":83,"quantityUserBuy":1,"price":23000000,"des":"PC Intel Core i7 GTX 1080 Ti"}
+//            ]
+            System.out.println("productList: "+ productListInput);
 
-//            // Chuyển đổi sang USD (chia cho 26,000)
-//            BigDecimal exchangeRate = new BigDecimal("26000");
-//            BigDecimal totalUSD = totalVND.divide(exchangeRate, 2, BigDecimal.ROUND_HALF_UP);
-//
-////            ở đây vì paypal ko hỗ trợ tiền việt trong sandbox nên mình sẽ chuyê
-////            từ tiền việt sang tiền đô USD
-////            mỗi giao dịch paypal sẽ mất 1 khoảng phí giao dịch
-//            Payment payment = paypalService.createPayment(
-//                    totalUSD,
-//                    "USD",
-//                    "paypal",
-//                    "sale",
-//                    cancelUrl,
-//                    successUrl,
-//                    userId,
-//                    productIds,
-//                    quantities,
-//                    des,
-//                    totalVND
-//            );
-//
+            Payment payment = paypalService.createPayment(
+                    "USD",
+                    "paypal",
+                    "sale",
+                    cancelUrl,
+                    successUrl,
+                    userId,
+                    productListInput
+            );
+
 //            System.out.println("payment: "+ payment);
 //            System.out.println("payment.getLinks(): "+ payment.getLinks());
-//
-////            Nhận đối tượng Payment từ PayPal, chứa danh sách Links.
-////            Tìm approval_url trong payment.getLinks() để chuyển hướng người dùng đến trang thanh toán PayPal.
-//            for(Links link : payment.getLinks()){
-//                if(link.getRel().equals("approval_url")){
-////                    Thành công: Trả về RedirectView đến approval_url của PayPal, đưa người dùng đến trang xác nhận thanh toán.
-//                    return ResponseEntity.ok(Map.of("approvalUrl", link));
-//                }
-//            }
-            return ResponseEntity.ok("test");
-//            đổi trỗ này thành PayPalRESTException sau khi test
-        } catch (Exception e){
+
+//            Nhận đối tượng Payment từ PayPal, chứa danh sách Links.
+//            Tìm approval_url trong payment.getLinks() để chuyển hướng người dùng đến trang thanh toán PayPal.
+            for(Links link : payment.getLinks()){
+                if(link.getRel().equals("approval_url")){
+//                    Thành công: Trả về RedirectView đến approval_url của PayPal, đưa người dùng đến trang xác nhận thanh toán.
+                    return ResponseEntity.ok(Map.of("approvalUrl", link));
+                }
+            }
+//        đổi này lại thành PayPalRESTException
+        } catch (PayPalRESTException e){
 //            Nếu có lỗi (PayPalRESTException), ghi log và chuyển hướng đến /payment/error.
             log.error(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return  ResponseEntity.badRequest().build();
     }

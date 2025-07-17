@@ -16,15 +16,22 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Orders {
+//    id này mình sẽ lấy của paypal là paymentID
+//    nên phải dùng kiểu String, ngoài ra ko bỏ
+//     @GeneratedValue(strategy = GenerationType.IDENTITY) vì
+//     nếu bỏ nó sẽ không tạo ra bảng OrderProduct trong databse
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    private Long orderId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String orderId;
 
     private LocalDate createDate;
 
     @Column(nullable = false)
     private BigDecimal sumPrice;
+
+    @Column(nullable = false)
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

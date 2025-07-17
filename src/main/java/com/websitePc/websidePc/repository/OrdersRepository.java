@@ -16,21 +16,23 @@ import java.time.LocalDate;
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
     @Modifying
     @Query(value = """
-            INSERT INTO orders (user_id, sum_price, create_date)
-            VALUES (:userId, :sumPrice, :createDate)
+            INSERT INTO orders (user_id, sum_price, create_date, order_id, status)
+            VALUES (:userId, :price, :createDate, :orderId, :status)
             """, nativeQuery = true)
     void insertOrder(
-            @Param("userId") String userId,
-            @Param("sumPrice") BigDecimal price,
-            @Param("createDate") LocalDate createDate
+            String userId,
+            BigDecimal price,
+            LocalDate createDate,
+            String orderId,
+            String status
     );
 
     // Hàm LAST_INSERT_ID() trong MySQL trả về giá trị AUTO_INCREMENT
     // đầu tiên được tạo ra bởi câu lệnh INSERT gần đây nhất trong phiên làm việc hiện tại.
     @Query(value = """
-            SELECT * FROM orders WHERE order_id = LAST_INSERT_ID()
+            SELECT * FROM orders WHERE order_id = :orderId
             """, nativeQuery = true)
-    Orders findLastInsertedOrder();
+    Orders findOrderByOrderId(String orderId);
 
     @Query(value = """
                SELECT

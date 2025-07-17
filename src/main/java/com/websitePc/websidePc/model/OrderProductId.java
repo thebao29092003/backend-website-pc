@@ -18,6 +18,6 @@ import java.io.Serializable;
 @EqualsAndHashCode // Tự động tạo phương thức equals() và hashCode() để so sánh các đối tượng khóa chính.
 public class OrderProductId implements Serializable {
     // orderId và productId: Là hai thành phần của khóa chính, đại diện cho mối quan hệ giữa order và product.
-    private Long orderId; // Trường khóa chính order_id
+    private String orderId; // Trường khóa chính order_id
     private Long productId; // Trường khóa chính product_id
 }
