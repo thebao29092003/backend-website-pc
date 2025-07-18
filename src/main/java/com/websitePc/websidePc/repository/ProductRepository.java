@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -13,6 +14,25 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    @Query(value = """
+		SELECT
+		    p.product_id,
+            p.product_name,
+            p.product_price,
+		    op.quantity,
+            p.product_type
+        FROM
+            product p
+        JOIN
+            order_product op on op.product_id = p.product_id
+		WHERE
+		    op.order_id = :orderId
+        ORDER BY
+            p.product_price desc
+        """,
+            nativeQuery = true)
+    Page<Object[]> findProductByOrderId(String orderId, Pageable pageable);
+
     @Modifying
     @Query(value = """
         UPDATE product p
@@ -92,10 +112,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 //    Sử dụng CONCAT để tạo mẫu tìm kiếm động (thêm ký tự % vào trước và sau :componentName).
 @Query(value = """
        SELECT
-                  p.product_id, 
-                  p.product_name, 
-                  p.product_price, 
-                  GROUP_CONCAT(i.img_link SEPARATOR ", ") as img_link, 
+                  p.product_id,
+                  p.product_name,
+                  p.product_price,
+                  GROUP_CONCAT(i.img_link SEPARATOR ", ") as img_link,
                   p.product_type
        FROM product p
        LEFT JOIN img i ON p.product_id = i.product_id

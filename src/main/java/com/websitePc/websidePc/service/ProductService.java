@@ -40,4 +40,7 @@ public class ProductService {
     public Page<Object[]> findProductByName(int page, int size, String productName) {
         return productRepository.findProductByName(PageRequest.of(page, size), productName);
     }
+    public Page<Object[]> findProductByOrderId(String orderId, int page, int size) {
+        return productRepository.findProductByOrderId(orderId, PageRequest.of(page, size));
+    }
 }

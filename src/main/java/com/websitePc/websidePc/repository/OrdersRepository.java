@@ -14,6 +14,20 @@ import java.time.LocalDate;
 
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
+//    dùng cho user nên chỉ show những order có status thành công
+    @Query(value = """
+                           SELECT
+                               o.order_id,
+                               o.create_date,
+                               o.sum_price,
+                               o.status
+                           FROM
+                               orders o
+                           WHERE o.user_id = :userId AND o.status = "COMPLETED"
+        """,
+            nativeQuery = true)
+    Page<Object[]> getOrderByUserId(String userId, Pageable pageable);
+
     @Modifying
     @Query(value = """
             INSERT INTO orders (user_id, sum_price, create_date, order_id, status)
@@ -34,15 +48,5 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
             """, nativeQuery = true)
     Orders findOrderByOrderId(String orderId);
 
-    @Query(value = """
-               SELECT
-                 o.order_id,
-                 o.create_date,
-                 o.sum_price
-               FROM
-                 orders o
-               WHERE o.user_id = :userId
-            """,
-            nativeQuery = true)
-    Page<Object[]> getOrderByUserId(@Param("userId") String userId, Pageable pageable);
+
 }
