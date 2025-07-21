@@ -18,6 +18,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Boolean existsByEmail(String email);
     Boolean existsByPhone(String phone);
+
+    @Modifying
+    @Query(value = """
+        UPDATE user u
+        SET u.full_name = :fullName, u.phone = :phone
+        WHERE u.user_id = :userId
+    """, nativeQuery = true)
+    void updateUser (String userId, String fullName, String phone);
+
+
     //  Câu truy vấn này kiểm tra xem một người dùng cụ thể đã mua một
     //  product cụ thể hay chưa. dùng email hoặc userId đều đc cái nào tiện thì dùng
     //  xem note

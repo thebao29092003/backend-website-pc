@@ -49,8 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         System.out.println("method: " + request.getMethod());
-        System.out.println("method: " + request.getRequestURI());
-        System.out.println("request doFilterInternal: " + authHeader);
+        System.out.println("url: " + request.getRequestURI());
+        System.out.println("header: " + authHeader);
+
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response); // If no JWT, continue the filter chain

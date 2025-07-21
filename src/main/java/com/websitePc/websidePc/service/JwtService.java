@@ -55,6 +55,10 @@ public class JwtService {
         Map<String, String> claims = new HashMap<>();
         Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
         claims.put("userId", user.get().getUserId());
+//        mình thêm phone để lưu vào state frontend nếu ko có phone khi mua hàng thì sẽ chuyển đến trang
+//        profile để thêm phone
+        claims.put("phone", user.get().getPhone());
+        claims.put("fullName", user.get().getFullName());
 
     /*
     - userDetails.getAuthorities():

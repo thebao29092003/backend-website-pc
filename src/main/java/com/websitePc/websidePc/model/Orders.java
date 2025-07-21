@@ -22,7 +22,7 @@ public class Orders {
 //     nếu bỏ nó sẽ không tạo ra bảng OrderProduct trong databse
     @Id
     @Column(name = "order_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String orderId;
 
     private LocalDate createDate;

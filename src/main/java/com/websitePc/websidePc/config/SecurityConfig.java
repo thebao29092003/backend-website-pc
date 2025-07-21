@@ -4,6 +4,7 @@ import com.websitePc.websidePc.filter.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -85,11 +86,15 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 //                xác thực http requests những request nào không cần xác thực, những request nào cần xác thực
+//                trước khi gửi request thật thì web sẽ gửi 1 preLight với method OPTIONS để kiểm tra xem
+//                có bị cross origin không? thế nên là mình sẽ cho all method này qua chỉ xác thực những api thật
+//                cùng với đó là kết hợp với configCors
                 .authorizeHttpRequests(req -> req
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
                                 "/api/auth/**", "/oauth2/**", "/login/oauth2/code/google",
                                 "/favicon.ico", "/login/**", "/api/forgot-password/**",
-                                "/api/public/**", "api/logout")
+                                "/api/public/**")
                         .permitAll()
                         .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các yêu cầu khác
                 )
