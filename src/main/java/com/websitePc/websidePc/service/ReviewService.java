@@ -33,17 +33,12 @@ public class ReviewService{
         String comment = reviewData.get("comment").asText();
         int score = reviewData.get("score").asInt();
         Long productId = reviewData.get("productId").asLong();
-        String email = reviewData.get("email").asText();
+        String userId = reviewData.get("userId").asText();
 
         // Tạo thời gian hiện tại
         LocalDateTime createDate = LocalDateTime.now();
 
-//        từ email của người dùng thì mình sẽ lấy ra được id
-//        mình dùng email để có thể lấy ra từ token
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ApplicationException("USER_NOT_FOUND", "User not found with email: " + email));
-
-        reviewRepository.insertReview(comment,score, productId, user.getUserId(), createDate);
+        reviewRepository.insertReview(comment,score, productId, userId, createDate);
     }
 
     @Transactional

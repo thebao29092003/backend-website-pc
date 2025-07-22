@@ -21,6 +21,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Component
@@ -97,8 +99,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         );
 
         // Gửi access token trong response body dạng JSON
-        response.setContentType("application/json");
-        response.getWriter().write("{\"accessToken\": \"" + tokens.getAccessToken() + "\"}");
+//        response.setContentType("application/json");
+//        response.getWriter().write("{\"accessToken\": \"" + tokens.getAccessToken() + "\"}");
 
 //        Lưu refresh token vào cookie với thuộc tính HttpOnly để bảo mật
         Cookie cookie = new Cookie("refreshToken", tokens.getRefreshToken());
@@ -111,5 +113,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 //        add cookie vào response
         response.addCookie(cookie);
 
+        String redirectUrl = "http://localhost:5173?access_token="
+                + URLEncoder.encode(tokens.getAccessToken(), StandardCharsets.UTF_8);
+
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 }
