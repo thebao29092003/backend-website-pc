@@ -5,11 +5,14 @@ import com.websitePc.websidePc.dto.ChangePasswordRequest;
 import com.websitePc.websidePc.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,6 +20,55 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
    private final UserService userService;
+
+    @GetMapping("/getUserTotalSpent")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> getUserTotalSpent(
+            @RequestParam("userId") String userId
+    ) {
+
+        Object user = userService.getUserTotalSpent(userId);
+        List<Object[]> spentPerMonth = userService.getSpentPerMonth(userId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", user);
+        response.put("spentPerMonth", spentPerMonth);
+        return response;
+    }
+
+    @GetMapping("/getUserByName")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> getUserByName(
+            @RequestParam("userName") String userName,
+            @RequestParam("page") int page
+    ) {
+
+        int size = 10;
+        Page<Object[]> userPage = userService.getUserByName(userName, page, size);
+        Map<String, Object> response = new HashMap<>();
+        response.put("userList", userPage.getContent());
+        response.put("currentPage", page);
+        response.put("totalPages", userPage.getTotalPages());
+        return response;
+    }
+
+    @GetMapping("/listUser")
+//    phải có quyền admin thì mới truy cập được
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> listOrders(
+            @RequestParam("page") int page
+    ) {
+        int size = 10;
+
+//        Chấp nhận tham số "ASC" hoặc "DESC"
+        Page<Object[]> users = userService.listUser(page, size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("userList", users.getContent());
+        response.put("currentPage", page);
+        response.put("totalPages", users.getTotalPages());
+        return response;
+    }
 
     @PatchMapping("/changePassword")
     public ResponseEntity<?> changePassword(

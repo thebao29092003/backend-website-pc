@@ -39,7 +39,7 @@ public class PaypalService {
 //    1 khi user bấm thanh toán tạo transaction chứa thông tin từng item(tên, đơn giá, số lượng) và tổng tiền (USD)
 //    2 tạo payer, intent, và transactions (lấy từ hàm getTransactionList) cho payment
 //    3 add order gồm thông tin: userId, danh sách sản phẩm và orderId lấy paymentId được tạo ở bước 2
-//    order hiện có status là PROCESSING là thành toán chưa được hoàn tất
+//    order hiện có status là CANCELED là thành toán chưa được hoàn tất
 //    chỉ khi controller gọi dến method executePayment th order sẽ chuyển sang trạng thái COMPLETED
     @Transactional
     public Payment createPayment(
@@ -110,8 +110,8 @@ public class PaypalService {
         // Tạo thời gian hiện tại
         LocalDate createDate = LocalDateTime.now().toLocalDate();
 //        1) thêm thông tin order gồm userId, sumPrice và tg tạo order
-//        trạng thái là processing
-        ordersRepository.insertOrder(userId, totalVND, createDate, orderId, "PROCESSING");
+//        trạng thái là CANCELED
+        ordersRepository.insertOrder(userId, totalVND, createDate, orderId, "CANCELED");
 
 //     2) Nhận order vừa mới thêm
         Orders order = ordersRepository.findOrderByOrderId(orderId);

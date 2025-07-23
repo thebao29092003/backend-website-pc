@@ -15,10 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/forgot-password")
@@ -39,7 +36,7 @@ public class ForgotPasswordController {
     //    send mail for email verification
     @PostMapping("/verifyEmail")
     @Transactional
-    public ResponseEntity<String> verifyEmail(
+    public ResponseEntity<?> verifyEmail(
             @RequestParam("email") String email)
     {
         Integer otp = otpGenerator();
@@ -70,14 +67,14 @@ public class ForgotPasswordController {
 
             emailService.sendSimpleMessage(mailBody);
             forgotPasswordRepository.save(forgotPasswordNew);
-            return ResponseEntity.ok("Email sent successfully with OTP");
+            return ResponseEntity.ok(Map.of("message", "OTP sent to your email successfully !"));
         } catch (ApplicationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/verifyOtp")
-    public ResponseEntity<String> verifyOtp(
+    public ResponseEntity<?> verifyOtp(
             @RequestBody ChangePassword changePassword
     ) {
         User user = userRepository
@@ -99,7 +96,7 @@ public class ForgotPasswordController {
 //        trước (nhỏ hơn) thời điểm hiện tại hay không.
         if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
             forgotPasswordRepository.deleteById(fp.getForgotPasswordId());
-            return ResponseEntity.ok("OTP has expired !");
+            return ResponseEntity.ok(Map.of("message", "OTP expired, please request a new one"));
         }
 
 //        kiểm tra xem mật khẩu mới và mật khẩu lặp lại có giống nhau không
@@ -114,7 +111,7 @@ public class ForgotPasswordController {
         user.setPassword(encodedPassword);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Change password successfully !");
+        return ResponseEntity.ok(Map.of("message", "Change password successfully !"));
     }
 
 

@@ -17,6 +17,14 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    public void deleteProductById(Long productId) {
+        productRepository.deleteProductById(productId);
+    }
+
+    public Page<Object[]> listProductForAdmin(int page, int size) {
+        return productRepository.listProductForAdmin(PageRequest.of(page, size));
+    }
+
     public List<Object[]> recommendByPrice(Long productId, BigDecimal price, BigDecimal priceRange, String type) {
         return productRepository.recommendByPrice(productId, price, priceRange, type);
     }

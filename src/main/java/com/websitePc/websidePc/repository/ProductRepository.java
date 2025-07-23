@@ -14,6 +14,41 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+//   ở đây thanh vì delete thì mình chuyển product_active thành false
+//   để ẩn nó đi khỏi admin và khách hàng nhưng nó vẫn còn trong database
+    @Modifying
+    @Query(value = """
+        UPDATE product p
+        SET p.product_active = "false"
+        WHERE p.product_id = :productId
+    """, nativeQuery = true)
+    void deleteProductById(Long productId);
+
+    @Query(value = """
+        SELECT
+            p.product_id,
+            p.product_name,
+            p.product_price,
+            GROUP_CONCAT(i.img_link SEPARATOR ', ') AS product_img,
+            p.product_type
+        FROM
+            product p
+        LEFT JOIN
+            img i ON p.product_id = i.product_id
+        WHERE  p.product_active = "true"
+        GROUP BY
+            p.product_id,
+            p.create_date
+        ORDER BY
+            p.create_date DESC, p.product_id ASC
+        """,
+            nativeQuery = true)
+    Page<Object[]> listProductForAdmin(
+            Pageable pageable
+    );
+
+    /*ở đây mình không cần p.product_active = "true" bởi vì những hàng bị ẩn vẫn có hiện
+    * trong order vì trước đó khách đã mua rồi*/
     @Query(value = """
 		SELECT
 		    p.product_id,
@@ -51,7 +86,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             FROM product p
             LEFT JOIN img i ON p.product_id = i.product_id
             WHERE product_price BETWEEN :price - :priceRange AND :price + :priceRange
-            AND p.product_id != :productId AND p.product_in_stock > 0 AND p.product_type = :type
+            AND p.product_id != :productId AND p.product_active = "true" AND p.product_type = :type
             GROUP BY p.product_id
             LIMIT 6;
            """, nativeQuery = true)
@@ -77,13 +112,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             LEFT JOIN
                 img i ON p.product_id = i.product_id
             WHERE
-                p.product_id = :productId
+                p.product_id = :productId AND p.product_active = "true"
             GROUP BY
                 p.product_id;
             """, nativeQuery = true)
     Object findProductById(Long productId);
 
-//    sản phẩm pc hoặc laptop mới nhất
+//    sản phẩm pc hoặc laptop mới nhất và p.product_active là true
+//    còn p.product_active là false nghĩa là bị ẩn đi rồi
+//    mình ko xóa hẳn tránh trường hợp bị mất dữ liệu như order, review, cart, v.v
     @Query(value = """
         SELECT
             p.product_id,
@@ -95,7 +132,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             product p
         LEFT JOIN
             img i ON p.product_id = i.product_id
-        WHERE p.product_type = :productType
+        WHERE p.product_type = :productType AND p.product_active = "true"
         GROUP BY
             p.product_id,
             p.create_date
@@ -123,7 +160,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            SELECT pc.product_id
            FROM component c
            JOIN product_component pc ON c.component_id = pc.component_id
-           WHERE c.component_type = :componentType AND c.component_name LIKE CONCAT('%', :componentName, '%')
+           WHERE c.component_type = :componentType AND p.product_active = "true" AND c.component_name LIKE CONCAT('%', :componentName, '%')
        )
        GROUP BY p.product_id
        """,
@@ -145,7 +182,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             p.product_type
        FROM product p
        LEFT JOIN img i ON p.product_id = i.product_id
-       WHERE p.product_name LIKE CONCAT('%', :productName, '%')
+       WHERE p.product_name LIKE CONCAT('%', :productName, '%') AND p.product_active = "true"
        GROUP BY p.product_id
        """,
             nativeQuery = true)

@@ -96,6 +96,9 @@ public class SecurityConfig {
                                 "/favicon.ico", "/login/**", "/api/forgot-password/**",
                                 "/api/public/**")
                         .permitAll()
+//                        khi sử dụng .hasRole("ADMIN"), framework tự động thêm tiền tố ROLE_ vào giá trị bạn cung cấp.
+//                        Do đó, hasRole("ADMIN") thực chất kiểm tra vai trò ROLE_ADMIN trong cơ sở dữ liệu.
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Chỉ cho phép người dùng có vai trò ADMIN truy cập vào các endpoint bắt đầu bằng "admin/"
                         .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các yêu cầu khác
                 )
 
@@ -126,6 +129,12 @@ public class SecurityConfig {
                                               authException) -> {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             response.getWriter().write("Access Denied - You do not have ADMIN rights.");
+                        })
+                        .authenticationEntryPoint((request,
+                                                   response,
+                                                   authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("UNAUTHORIZED - You do not have UNAUTHORIZED");
                         })
                 );
         return http.build();

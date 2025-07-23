@@ -113,6 +113,11 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 //        add cookie vào response
         response.addCookie(cookie);
 
+//        access_token là một chuỗi JWT, thường chứa các ký tự đặc biệt như ., =, +, hoặc /.
+//        Những ký tự này có thể làm hỏng cấu trúc URL nếu dùng trực tiếp (ví dụ: = bị hiểu nhầm là phân tách tham số).
+//       URLEncoder.encode chuyển các ký tự đặc biệt thành dạng an toàn cho URL (ví dụ: = thành %3D, + thành %2B),
+//       đảm bảo URL hợp lệ và không bị lỗi khi truyền.
+//       Dùng thẳng tokens.getAccessToken() sẽ gây lỗi nếu token chứa ký tự đặc biệt, dẫn đến URL không đúng hoặc bị cắt xén
         String redirectUrl = "http://localhost:5173?access_token="
                 + URLEncoder.encode(tokens.getAccessToken(), StandardCharsets.UTF_8);
 

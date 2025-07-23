@@ -8,6 +8,9 @@ import com.websitePc.websidePc.model.UserProduct;
 import com.websitePc.websidePc.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +28,22 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public Object getUserTotalSpent(String userId) {
+        return userRepository.getUserTotalSpent(userId);
+    }
+
+    public List<Object[]> getSpentPerMonth(String userId) {
+        return userRepository.getSpentPerMonth(userId);
+    }
+
+    public Page<Object[]> getUserByName(String userName, int page, int size) {
+        return userRepository.findUserByName(userName, PageRequest.of(page, size));
+    }
+
+    public Page<Object[]> listUser(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.listUser(pageable);
+    }
 
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
 //        lấy xác thực user hiện có
