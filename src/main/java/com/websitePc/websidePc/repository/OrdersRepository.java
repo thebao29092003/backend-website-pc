@@ -14,6 +14,22 @@ import java.time.LocalDate;
 
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
+
+    @Query(value = """
+            SELECT
+                o.order_id,
+                o.create_date,
+                o.sum_price,
+                o.status,
+                u.email
+            FROM
+                orders o
+            JOIN
+                user u ON o.user_id = u.user_id
+        """,
+            nativeQuery = true)
+    Page<Object[]> listOrder(Pageable pageable);
+
 //    dùng cho user nên chỉ show những order có status thành công
     @Query(value = """
                            SELECT

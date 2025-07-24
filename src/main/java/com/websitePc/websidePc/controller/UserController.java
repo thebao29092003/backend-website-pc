@@ -24,11 +24,12 @@ public class UserController {
     @GetMapping("/getUserTotalSpent")
     @PreAuthorize("hasRole('ADMIN')")
     public Map<String, Object> getUserTotalSpent(
-            @RequestParam("userId") String userId
+            @RequestParam("userId") String userId,
+            @RequestParam("month") int month
     ) {
 
         Object user = userService.getUserTotalSpent(userId);
-        List<Object[]> spentPerMonth = userService.getSpentPerMonth(userId);
+        List<Object[]> spentPerMonth = userService.getSpentPerMonth(userId, month);
 
         Map<String, Object> response = new HashMap<>();
         response.put("user", user);

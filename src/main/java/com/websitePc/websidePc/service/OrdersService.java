@@ -20,4 +20,13 @@ public class OrdersService {
 
         return ordersRepository.getOrderByUserId(userId, pageable);
     }
+
+    public Page<Object[]> getListOrder(String sortDirection, String sortField, int page, int size) {
+        // Tạo Sort object với hướng sắp xếp động
+        // hướng sắp xếp và trường sắp xếp
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return ordersRepository.listOrder(pageable);
+    }
 }

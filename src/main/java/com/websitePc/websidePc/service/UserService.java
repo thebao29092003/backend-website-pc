@@ -32,8 +32,8 @@ public class UserService {
         return userRepository.getUserTotalSpent(userId);
     }
 
-    public List<Object[]> getSpentPerMonth(String userId) {
-        return userRepository.getSpentPerMonth(userId);
+    public List<Object[]> getSpentPerMonth(String userId, int month) {
+        return userRepository.getSpentPerMonth(userId, month);
     }
 
     public Page<Object[]> getUserByName(String userName, int page, int size) {

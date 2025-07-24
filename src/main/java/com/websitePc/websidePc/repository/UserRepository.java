@@ -21,6 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByPhone(String phone);
 
+    //    AND o.status = "COMPLETED": là order mà user đã thanh toán thành công
     @Query(value = """
                                 SELECT
                                     u.user_id,
@@ -32,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                                     user u
                                 LEFT JOIN
                                     orders o ON u.user_id = o.user_id
-                                WHERE u.user_id = :userId
+                                WHERE u.user_id = :userId AND o.status = "COMPLETED"
                                 GROUP BY
                                     u.user_id
             """,
@@ -40,22 +41,25 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Object getUserTotalSpent(String userId);
 
     //    nó luôn cố định 12 thàng nên không cần phân trang
+    //    AND o.status = "COMPLETED": là order mà user đã thanh toán thành công
     @Query(value = """
                 SELECT
                     DATE_FORMAT(create_date, '%Y-%m') AS month,
                     SUM(sum_price) AS total_spent
                 FROM
-                    orders
+                    orders o
                 WHERE
-                    user_id = :userId
-                    AND create_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 12 MONTH)
+                    o.user_id = :userId
+                    AND create_date >= DATE_SUB(CURRENT_DATE(), INTERVAL :month MONTH)
+                    AND o.status = "COMPLETED"
                 GROUP BY
                     DATE_FORMAT(create_date, '%Y-%m')
                 ORDER BY
-                    month ASC;
+                    month DESC
+                limit :month;
             """,
             nativeQuery = true)
-    List<Object[]> getSpentPerMonth(String userId);
+    List<Object[]> getSpentPerMonth(String userId, int month);
 
 //    COALESCE để thay thế NULL thành 0 nếu user không có đơn hàng nào
     @Query(value = """
