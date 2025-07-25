@@ -6,10 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // cái controller này cần được bảo vệ nên không thêm request mapping ("/api/public")
@@ -19,7 +21,25 @@ public class OrdersController {
     private final OrdersService ordersService;
     private final ProductService productService;
 
-    @GetMapping("getProductByOrderId")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/quantityOrderMonths/{month}")
+    public Map<String, Object> quantityOrderMonths(@PathVariable int month) {
+        List<Object[]> quantityOrderMonth = ordersService.getQuantityOrderMonths(month);
+        Map<String, Object> response = new HashMap<>();
+        response.put("quantityOrderMonth", quantityOrderMonth);
+        return response;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/revenueMonths/{month}")
+    public Map<String, Object> revenueMonths(@PathVariable int month) {
+        List<Object[]> revenueMonths = ordersService.getRevenueMonths(month);
+        Map<String, Object> response = new HashMap<>();
+        response.put("revenueMonth", revenueMonths);
+        return response;
+    }
+
+    @GetMapping("/getProductByOrderId")
     public Map<String, Object> getProductByOrderId(
             @RequestParam(value = "page") int page,
             @RequestParam(value = "numberPerPage") int numberPerPage,
@@ -34,7 +54,7 @@ public class OrdersController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("listOrder")
+    @GetMapping("/listOrder")
     public Map<String, Object> listOrders(
             @RequestParam("page") int page,
             @RequestParam("sortDirection") String sortDirection,
@@ -52,7 +72,7 @@ public class OrdersController {
         return response;
     }
 
-    @GetMapping("getOrderByUserId")
+    @GetMapping("/getOrderByUserId")
     public Map<String, Object> getOrderByUserId(
             @RequestParam("userId") String userId,
             @RequestParam("page") int page,

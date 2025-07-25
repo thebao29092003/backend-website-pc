@@ -17,6 +17,10 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    public List<Object[]> productBuyMonths(int month) {
+        return productRepository.productBuyMonths(month);
+    }
+
     public void deleteProductById(Long productId) {
         productRepository.deleteProductById(productId);
     }

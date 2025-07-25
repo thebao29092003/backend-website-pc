@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -16,6 +17,14 @@ import java.util.Map;
 public class AdminController {
 
     private final ProductService productService;
+
+    @GetMapping("/productBuyMonths/{month}")
+    public Map<String, Object> productBuyMonths(@PathVariable int month) {
+        List<Object[]> productPage = productService.productBuyMonths(month);
+        Map<String, Object> response = new HashMap<>();
+        response.put("productList", productPage);
+        return response;
+    }
 
     @GetMapping("/product/{pageNo}")
     public ResponseEntity<?> pcListNew(@PathVariable int pageNo) {

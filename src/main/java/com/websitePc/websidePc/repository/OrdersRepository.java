@@ -11,9 +11,45 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
+    //    trả về số đơn hàng theo tháng trong 3,6,12 tháng gần nhất
+    @Query(value = """
+            SELECT
+                DATE_FORMAT(create_date, '%Y-%m') AS month,
+                COUNT(order_id) AS quantity_order
+            FROM
+                orders
+            WHERE
+                create_date >= DATE_SUB(CURDATE(), INTERVAL :month MONTH)
+            GROUP BY
+                DATE_FORMAT(create_date, '%Y-%m')
+            ORDER BY
+                month DESC
+            limit :month;
+        """,
+            nativeQuery = true)
+    List<Object[]> quantityOrderMonths(int month);
+
+    //    trả về doanh thu theo tháng trong 3,6,12 tháng gần nhất
+    @Query(value = """
+            SELECT
+                DATE_FORMAT(create_date, '%Y-%m') AS month,
+                COALESCE(SUM(sum_price), 0) AS total_revenue
+            FROM
+                orders
+            WHERE
+                create_date >= DATE_SUB(CURDATE(), INTERVAL :month MONTH)
+            GROUP BY
+                DATE_FORMAT(create_date, '%Y-%m')
+            ORDER BY
+                month DESC
+            limit :month;
+        """,
+            nativeQuery = true)
+    List<Object[]> revenueMonths(int month);
 
     @Query(value = """
             SELECT

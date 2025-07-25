@@ -14,6 +14,28 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+//    trả về 5 product có số lượng bán cao nhất trong 3, 6, 12 tháng gần nhất
+    @Query(value = """
+            SELECT
+                p.product_id,
+                p.product_name,
+                SUM(op.quantity) AS total_quantity
+            FROM
+                product p
+            	JOIN order_product op ON p.product_id = op.product_id
+            	JOIN orders o ON op.order_id = o.order_id
+            WHERE
+                o.create_date >= DATE_SUB(CURDATE(), INTERVAL :month MONTH)
+            GROUP BY
+                p.product_id, p.product_name
+            ORDER BY
+                total_quantity DESC
+            LIMIT 5;
+        """,
+            nativeQuery = true)
+    List<Object[]> productBuyMonths(int month);
+
 //   ở đây thanh vì delete thì mình chuyển product_active thành false
 //   để ẩn nó đi khỏi admin và khách hàng nhưng nó vẫn còn trong database
     @Modifying
