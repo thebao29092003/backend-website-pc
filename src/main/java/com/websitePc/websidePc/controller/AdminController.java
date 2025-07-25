@@ -1,5 +1,6 @@
 package com.websitePc.websidePc.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.websitePc.websidePc.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,26 @@ import java.util.Map;
 public class AdminController {
 
     private final ProductService productService;
+
+//    cái controller này để thêm hoặc xóa quyền admin
+    @PutMapping("/toggleAdmin")
+    @Transactional
+    public ResponseEntity<?> toggleAdmin(
+            @RequestParam("userId") String userId,
+            @RequestParam("role") String role
+    ) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            productService.toggleAdmin(userId, role);
+            response.put("status", "success");
+            response.put("message", "Change role successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", "Error change role: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
 
     @GetMapping("/productBuyMonths/{month}")
     public Map<String, Object> productBuyMonths(@PathVariable int month) {

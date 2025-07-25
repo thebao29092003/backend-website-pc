@@ -55,4 +55,8 @@ public class ProductService {
     public Page<Object[]> findProductByOrderId(String orderId, int page, int size) {
         return productRepository.findProductByOrderId(orderId, PageRequest.of(page, size));
     }
+
+    public void toggleAdmin(String userId, String role) {
+        productRepository.toggleAdmin(userId, role);
+    }
 }

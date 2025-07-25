@@ -15,6 +15,15 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    @Modifying
+    @Query(value = """
+        UPDATE user u
+        SET u.role = :role
+        WHERE u.user_id = :userId
+        """,
+            nativeQuery = true)
+    void toggleAdmin(String userId, String role);
+
 //    trả về 5 product có số lượng bán cao nhất trong 3, 6, 12 tháng gần nhất
     @Query(value = """
             SELECT

@@ -22,13 +22,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByPhone(String phone);
 
     //    AND o.status = "COMPLETED": là order mà user đã thanh toán thành công
+    //    trả về thêm role để có thể thay đổi quyền hạn của user
     @Query(value = """
                                 SELECT
                                     u.user_id,
                                     u.full_name,
                                     u.email,
                                     u.phone,
-                                    COALESCE(SUM(o.sum_price), 0) AS total_spent
+                                    COALESCE(SUM(o.sum_price), 0) AS total_spent,
+                                    u.role
                                 FROM
                                     user u
                                 LEFT JOIN
