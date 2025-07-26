@@ -23,19 +23,22 @@ public class Component {
     @Column(nullable = false)
     private String componentName;
 
+//    giá linh kiện nhập vào
     @Column(nullable = false)
     private BigDecimal componentPrice;
-
-//    lưu vào database dưới dạng JSON
-//    Sử dụng @Column(columnDefinition = "JSON") cho component_specification
-//    là phù hợp vì các linh kiện PC có thông số không đồng nhất
-    @Column(columnDefinition = "JSON", nullable = false)
-    private String componentSpecification;
 
     @Column(nullable = false)
     private String componentType;
 
     private Integer componentInStock;
+
+    //    khi tạo component mới thì nó sẽ tự động là "TRUE"
+//    Khi muốn xóa component thì sẽ set thành "FALSE" (để khỏi hiển thị len khi admin thêm
+//    linh kiện cho sản phẩm)
+//    thay vì mình xóa hẳn component khỏi database. Bởi vì khi xóa hẳn thì sẽ mất dữ liệu
+//    và phải xóa đi rất nhiều bản ghi liên quan đến component này
+    @Column
+    private String componentActive;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "component", fetch = FetchType.EAGER)
     private Collection<ProductComponent> productComponents;

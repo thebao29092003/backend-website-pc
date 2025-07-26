@@ -61,7 +61,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             p.product_name,
             p.product_price,
             GROUP_CONCAT(i.img_link SEPARATOR ', ') AS product_img,
-            p.product_type
+            p.product_type,
+            p.product_in_stock
         FROM
             product p
         LEFT JOIN
@@ -71,7 +72,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             p.product_id,
             p.create_date
         ORDER BY
-            p.create_date DESC, p.product_id ASC
+            p.create_date DESC, p.product_type ASC
         """,
             nativeQuery = true)
     Page<Object[]> listProductForAdmin(
@@ -206,11 +207,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 //    Sử dụng CONCAT để tạo mẫu tìm kiếm động (thêm ký tự % vào trước và sau :componentName).
     @Query(value = """
        SELECT
-            p.product_id, 
+            p.product_id,
             p.product_name, 
             p.product_price, 
             GROUP_CONCAT(i.img_link SEPARATOR ", ") as img_link,
-            p.product_type
+            p.product_type,
+            p.product_in_stock
        FROM product p
        LEFT JOIN img i ON p.product_id = i.product_id
        WHERE p.product_name LIKE CONCAT('%', :productName, '%') AND p.product_active = "true"

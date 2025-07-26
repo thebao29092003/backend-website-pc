@@ -25,6 +25,4 @@ public class ProductComponent {
     @JoinColumn(name = "component_id") // tham chiếu đến trường productId trong OrderProductId
     private Component component;
 
-//    loại link kiện: ram, cpu, mainboard, gpu, ssd, hdd, psu, case
-    private String type;
 }
