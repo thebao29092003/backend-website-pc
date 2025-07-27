@@ -23,14 +23,10 @@ public class Component {
     @Column(nullable = false)
     private String componentName;
 
-//    giá linh kiện nhập vào
-    @Column(nullable = false)
-    private BigDecimal componentPrice;
 
     @Column(nullable = false)
     private String componentType;
 
-    private Integer componentInStock;
 
     //    khi tạo component mới thì nó sẽ tự động là "TRUE"
 //    Khi muốn xóa component thì sẽ set thành "FALSE" (để khỏi hiển thị len khi admin thêm

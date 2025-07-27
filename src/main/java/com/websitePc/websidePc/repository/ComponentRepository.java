@@ -18,17 +18,13 @@ public interface ComponentRepository extends JpaRepository<Component, Long> {
     @Modifying
     @Query(value = """
             INSERT INTO component (
-                                    component_in_stock,
-                                    component_price,
                                     component_name,
                                     component_type,
                                     component_active
                                   )
-            VALUES (:componentInStock, :componentPrice, :componentName, :componentType, "true")
+            VALUES (:componentName, :componentType, "true")
             """, nativeQuery = true)
     void insertComponent(
-            int componentInStock,
-            BigDecimal componentPrice,
             String componentName,
             String componentType
     );
@@ -47,9 +43,7 @@ public interface ComponentRepository extends JpaRepository<Component, Long> {
         SELECT
             c.component_id,
             c.component_name,
-            c.component_price,
-            c.component_type,
-            c.component_in_stock
+            c.component_type
         FROM
             component c
         WHERE
@@ -68,9 +62,7 @@ public interface ComponentRepository extends JpaRepository<Component, Long> {
         SELECT
             c.component_id,
             c.component_name,
-            c.component_price,
-            c.component_type,
-            c.component_in_stock
+            c.component_type
         FROM
             component c
         WHERE  c.component_active = "true"

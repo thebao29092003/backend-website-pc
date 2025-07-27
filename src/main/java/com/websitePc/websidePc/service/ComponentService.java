@@ -21,13 +21,10 @@ public class ComponentService {
 
     @Transactional
     public void addComponent(JsonNode componentData) {
-        //  Chuyển sang String
-        int componentInStock = componentData.get("componentInStock").asInt();
-        BigDecimal componentPrice = new BigDecimal(componentData.get("componentPrice").asText());
         String componentName = componentData.get("componentName").asText();
         String componentType = componentData.get("componentType").asText();
 
-        componentRepository.insertComponent(componentInStock, componentPrice, componentName, componentType);
+        componentRepository.insertComponent(componentName, componentType);
     }
 
     public void deleteComponentById(Long componentId) {
