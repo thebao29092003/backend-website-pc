@@ -21,6 +21,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByPhone(String phone);
 
+    @Modifying
+    @Query(value = """
+        UPDATE user u
+        SET u.role = :role
+        WHERE u.user_id = :userId
+        """,
+            nativeQuery = true)
+    void toggleAdmin(String userId, String role);
+
     //    AND o.status = "COMPLETED": là order mà user đã thanh toán thành công
     //    trả về thêm role để có thể thay đổi quyền hạn của user
     @Query(value = """

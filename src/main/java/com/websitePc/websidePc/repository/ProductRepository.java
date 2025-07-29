@@ -10,19 +10,43 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    @Query(value = """
+            SELECT product_id FROM product WHERE product_id = LAST_INSERT_ID()
+            """, nativeQuery = true)
+    Long findLastInsertedProduct();
+
     @Modifying
     @Query(value = """
-        UPDATE user u
-        SET u.role = :role
-        WHERE u.user_id = :userId
-        """,
-            nativeQuery = true)
-    void toggleAdmin(String userId, String role);
+            INSERT INTO product (
+                                    product_in_stock,
+                                    product_name,
+                                    product_price,
+                                    product_type,
+                                    create_date,
+                                    product_active
+                                  )
+            VALUES (:productInStock,
+                    :productName,
+                    :productPrice,
+                    :productType,
+                    :createDate,
+                    "true")
+            """, nativeQuery = true)
+    void insertProduct(
+            int productInStock,
+            String productName,
+            BigDecimal productPrice,
+            String productType,
+            LocalDate createDate
+            );
+
 
 //    trả về 5 product có số lượng bán cao nhất trong 3, 6, 12 tháng gần nhất
     @Query(value = """

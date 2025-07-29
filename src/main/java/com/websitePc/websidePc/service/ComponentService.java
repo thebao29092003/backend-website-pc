@@ -1,14 +1,12 @@
 package com.websitePc.websidePc.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.websitePc.websidePc.model.UserProduct;
 import com.websitePc.websidePc.repository.ComponentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -29,6 +27,10 @@ public class ComponentService {
 
     public void deleteComponentById(Long componentId) {
         componentRepository.deleteComponentById(componentId);
+    }
+
+    public List<Object[]> listComponentByType(String type) {
+        return componentRepository.listComponentByType(type);
     }
 
     public Page<Object[]> listComponentByName(int page, int size, String name) {

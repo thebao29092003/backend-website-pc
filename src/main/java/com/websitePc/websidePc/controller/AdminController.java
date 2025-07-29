@@ -3,6 +3,7 @@ package com.websitePc.websidePc.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.websitePc.websidePc.service.ComponentService;
 import com.websitePc.websidePc.service.ProductService;
+import com.websitePc.websidePc.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,31 @@ public class AdminController {
 
     private final ProductService productService;
     private final ComponentService componentService;
+    private final UserService userService;
+
+    @PostMapping("/addProduct")
+    public ResponseEntity<?> addProduct(@RequestBody JsonNode productData) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Gọi service để xử lý logic thêm sản phẩm từ dữ liệu JSON.
+            productService.addProductAndComponent(productData);
+            response.put("status", "success");
+            response.put("message", "Product added successfully");
+            // Trả về HTTP 200 OK kèm message thành công.
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", "Error adding Product: " + e.getMessage());
+            // Trả về HTTP 500 Internal Server Error.Thêm thông báo lỗi từ exception (e.getMessage()).
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    @GetMapping("/componentType")
+    public ResponseEntity<?> listComponentByType(@RequestParam("type") String type) {
+        List<Object[]> componentList = componentService.listComponentByType(type);
+        return ResponseEntity.ok(Map.of("componentList", componentList));
+    }
 
     @PostMapping("/addComponent")
     public ResponseEntity<?> addComponent(@RequestBody JsonNode componentData) {
@@ -48,7 +74,7 @@ public class AdminController {
     ) {
         Map<String, Object> response = new HashMap<>();
         try {
-            productService.toggleAdmin(userId, role);
+            userService.toggleAdmin(userId, role);
             response.put("status", "success");
             response.put("message", "Change role successfully");
             return ResponseEntity.ok(response);

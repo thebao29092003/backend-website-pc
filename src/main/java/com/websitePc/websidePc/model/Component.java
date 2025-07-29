@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.Collection;
 
+
+// component này thì mình chỉ quan lí xem sản phẩm nào có linh kiện nào
+// chứ không bán linh kiện riêng lẻ vì thế không cần có giá, số lượng tồn kho
 @Entity
 @Getter
 @Setter

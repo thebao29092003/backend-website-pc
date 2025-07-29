@@ -15,6 +15,24 @@ import java.util.List;
 @Repository
 public interface ComponentRepository extends JpaRepository<Component, Long> {
 
+    @Query(value = """
+        SELECT
+            c.component_id,
+            c.component_name,
+            c.component_type
+        FROM
+            component c
+        WHERE
+            c.component_active = "true" AND
+            c.component_type = :type
+        ORDER BY
+            c.component_name ASC
+        """,
+            nativeQuery = true)
+    List<Object[]> listComponentByType(
+            String type
+    );
+
     @Modifying
     @Query(value = """
             INSERT INTO component (

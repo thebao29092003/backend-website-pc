@@ -28,6 +28,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public void toggleAdmin(String userId, String role) {
+        userRepository.toggleAdmin(userId, role);
+    }
+
     public Object getUserTotalSpent(String userId) {
         return userRepository.getUserTotalSpent(userId);
     }
