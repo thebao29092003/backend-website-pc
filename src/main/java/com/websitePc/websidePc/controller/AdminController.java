@@ -23,6 +23,15 @@ public class AdminController {
     private final ComponentService componentService;
     private final UserService userService;
 
+    @GetMapping("/addComponentProductFile")
+    public ResponseEntity<?> addComponentProductFile() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Authorized to add component and product from file");
+        // Trả về HTTP 200 OK kèm message thành công.
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/addProduct")
     public ResponseEntity<?> addProduct(@RequestBody JsonNode productData) {
         Map<String, Object> response = new HashMap<>();
