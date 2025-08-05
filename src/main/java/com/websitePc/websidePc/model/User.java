@@ -21,7 +21,7 @@ public class User {
     @Column(name = "user_id")
     private String userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -34,7 +34,7 @@ public class User {
     @CreationTimestamp
     private LocalDate createAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String phone;
 
     @Enumerated(EnumType.STRING)

@@ -27,7 +27,7 @@ public class AuthController {
 //        save the  new user to the database and return a success response
         System.out.println("Registering user: " + registerRequest);
         authService.registerUser(registerRequest);
-        return ResponseEntity.ok(Map.of("message", "User registered successfully"));
+        return ResponseEntity.ok(Map.of("status", "ok"));
     }
 
     @PostMapping("/login")

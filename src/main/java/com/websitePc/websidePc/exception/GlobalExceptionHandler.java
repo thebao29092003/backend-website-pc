@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
         } else if("INVALID_OTP".equals(ex.getErrorType())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         } else if("PHONE_TAKEN".equals(ex.getErrorType())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         } else if("REVIEW_NOT_FOUND".equals(ex.getErrorType())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         } else if("WRONG_PASSWORD".equals(ex.getErrorType())) {
