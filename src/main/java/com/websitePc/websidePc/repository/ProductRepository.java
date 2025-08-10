@@ -25,12 +25,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Modifying
     @Query(value = """
             INSERT INTO product (
-                                    product_in_stock,
-                                    product_name,
-                                    product_price,
-                                    product_type,
-                                    create_date,
-                                    product_active
+                   product_in_stock,
+                   product_name,
+                   product_price,
+                   product_type,
+                   create_date,
+                   product_active
                                   )
             VALUES (:productInStock,
                     :productName,

@@ -14,9 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 //"In-memory" là gì?: là lưu data trong RAM để đạt tốc độ cao.
 @Configuration
 public class RedisConfig {
-    //    Class RedisConfig được đánh dấu bằng annotation @Configuration,
-//    cho biết đây là một class cấu hình trong Spring, nơi bạn định nghĩa các
-//    bean để quản lý Redis (cơ sở dữ liệu NoSQL in-memory).
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory(){
 //        new LettuceConnectionFactory(): Tạo một kết nối mặc định tới Redis
@@ -24,7 +22,7 @@ public class RedisConfig {
         return new LettuceConnectionFactory();
     }
 
-    //   Phương thức này tạo và trả về một bean RedisTemplate,
+//   Phương thức này tạo và trả về một bean RedisTemplate,
 //   là lớp trung tâm để thực hiện các thao tác Redis (SET, GET, DEL, v.v.)
 //   với dữ liệu dạng key-value.
 //    RedisTemplate<String, Object> cho phép sử dụng key là String và

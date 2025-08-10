@@ -13,7 +13,7 @@ public class ConfigCors implements WebMvcConfigurer {
 //        addMapping("/**"): Áp dụng quy tắc CORS cho tất cả các endpoint trong ứng dụng (ký tự /** biểu thị mọi đường dẫn).
 //        Nghĩa là mọi yêu cầu HTTP tới ứng dụng đều tuân theo cấu hình này.
         registry.addMapping("/**")
-//                Chỉ định nguồn gốc (origin) được phép gửi yêu cầu đến serve
+//                Chỉ định nguồn gốc (origin) được phép gửi yêu cầu đến server
                 .allowedOrigins("http://localhost:5173") // URL frontend
 //                allowedMethods: Chỉ định các phương thức HTTP được phép. Ở đây, các phương thức GET, POST, PUT, DELETE,
 //                và OPTIONS (dùng cho preflight request) được cho phép.

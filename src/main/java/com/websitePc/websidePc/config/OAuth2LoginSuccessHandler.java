@@ -34,7 +34,10 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     @Value("${app.jwt.refresh-expiration}")
     private long jwtExpirationMs;
 
-    public OAuth2LoginSuccessHandler(JwtService jwtService, UserRepository userRepository, UserDetailsService userDetailsService, TokenRepository tokenRepository) {
+    public OAuth2LoginSuccessHandler(JwtService jwtService,
+                                     UserRepository userRepository,
+                                     UserDetailsService userDetailsService,
+                                     TokenRepository tokenRepository) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
@@ -97,10 +100,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                 tokens.getAccessToken(),
                 tokens.getRefreshToken()
         );
-
-        // Gửi access token trong response body dạng JSON
-//        response.setContentType("application/json");
-//        response.getWriter().write("{\"accessToken\": \"" + tokens.getAccessToken() + "\"}");
 
 //        Lưu refresh token vào cookie với thuộc tính HttpOnly để bảo mật
         Cookie cookie = new Cookie("refreshToken", tokens.getRefreshToken());

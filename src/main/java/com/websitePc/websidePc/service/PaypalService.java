@@ -33,14 +33,14 @@ public class PaypalService {
     private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
 
-    //    Chức năng: Tạo một yêu cầu thanh toán PayPal và trả về đối tượng Payment chứa thông tin thanh toán,
+//    Chức năng: Tạo một yêu cầu thanh toán PayPal và trả về đối tượng Payment chứa thông tin thanh toán,
 //    bao gồm URL để chuyển hướng người dùng đến trang thanh toán PayPal.
 //    luồng chạy của service:
 //    1 khi user bấm thanh toán tạo transaction chứa thông tin từng item(tên, đơn giá, số lượng) và tổng tiền (USD)
 //    2 tạo payer, intent, và transactions (lấy từ hàm getTransactionList) cho payment
 //    3 add order gồm thông tin: userId, danh sách sản phẩm và orderId lấy paymentId được tạo ở bước 2
 //    order hiện có status là CANCELED là thành toán chưa được hoàn tất
-//    chỉ khi controller gọi dến method executePayment th order sẽ chuyển sang trạng thái COMPLETED
+//    chỉ khi controller gọi dến method executePayment thì order sẽ chuyển sang trạng thái COMPLETED
     @Transactional
     public Payment createPayment(
             String currency,
@@ -113,9 +113,6 @@ public class PaypalService {
 //        trạng thái là CANCELED
         ordersRepository.insertOrder(userId, totalVND, createDate, orderId, "CANCELED");
 
-//     2) Nhận order vừa mới thêm
-        Orders order = ordersRepository.findOrderByOrderId(orderId);
-
 //        duyệt qua từng Map trong productList.
         for (Map<String, Object> product : productList) {
             Long productId = parseLong((product.get("productId").toString()));
@@ -123,7 +120,7 @@ public class PaypalService {
             System.out.println("productList: " + productList);
 
 //                Lưu thông tin sản phẩm (quantity, orderId, productIdLong) vào bảng order_product.
-            orderProductRepository.insertOrderProduct(quantityUserBuy, order.getOrderId(), productId);
+            orderProductRepository.insertOrderProduct(quantityUserBuy, orderId, productId);
         }
     }
 
@@ -177,7 +174,7 @@ public class PaypalService {
         itemList.setItems(items);
 
 //          Chuyển đổi sang USD (chia cho 26,000)
-//            ở đây vì paypal ko hỗ trợ tiền việt trong sandbox nên mình sẽ chuyê
+//            ở đây vì paypal ko hỗ trợ tiền việt trong sandbox nên mình sẽ chuyển
 //            từ tiền việt sang tiền đô USD
 //            mỗi giao dịch paypal sẽ mất 1 khoảng phí giao dịch
 //        Tạo đối tượng Amount để xác định số tiền và loại tiền tệ.
@@ -187,9 +184,6 @@ public class PaypalService {
         amount.setTotal(String.format(Locale.US, "%.2f", totalUSD));
 
 //        Tạo Transaction để mô tả giao dịch (số tiền, mô tả).
-//        tính cart có nhiều item thì mình thêm nhiều transction ở đây thôi
-//        như vậy phải xem lại cách truyền body ở frontend chỗ des với totalVND
-//        chỗ productDetail là đúng rồi những chỗ cartPage xem lại
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setItemList(itemList);
@@ -215,8 +209,6 @@ public class PaypalService {
         PaymentExecution paymentExecution = new PaymentExecution();
         paymentExecution.setPayerId(payerId);
 
-//      CẬP NHẬT TRẠNG THÁI ORDER (getState()) Ở ĐÂY GỒM payerId (nID người thanh toán trên paypal)
-
         // Thực thi thanh toán
         Payment executedPayment = payment.execute(apiContext, paymentExecution);
 
@@ -231,10 +223,10 @@ public class PaypalService {
                 ordersRepository.save(order);
 
                 // Trừ hàng trong kho
-                List<Object[]> orderProducts = orderProductRepository.findByOrderId(order.getOrderId());
+                List<Object[]> orderProducts = orderProductRepository.findByOrderId(paymentId);
                 System.out.println("orderProducts: " + orderProducts);
                 for (Object[] product : orderProducts) {
-                    System.out.println("product: " + Arrays.toString(product));
+//                    System.out.println("product: " + Arrays.toString(product));
                     Long productId = (Long) product[0];
                     Integer quantityUserBuy = (Integer) product[1];
 //                Cập nhật số lượng tồn kho (inStock) của sản phẩm trong bảng product dựa trên productIdLong và quantity.

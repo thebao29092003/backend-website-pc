@@ -36,8 +36,8 @@ public class PaypalController {
     ) {
         try{
 //            Gọi paypalService.createPayment với các tham số:
-//              total2: Số tiền (10,000,000).
-//              "Đ": Loại tiền tệ (lưu ý: đây là lỗi, sẽ giải thích ở phần VND).
+//              total: Số tiền (10,000,000).
+//              "USD": Loại tiền tệ đô la Mỹ do không dùng được VND trong sanbox thì phải
 //              "paypal": Phương thức thanh toán.
 //              "sale": Mục đích thanh toán (thanh toán ngay).
 //              "Payment description": Mô tả giao dịch.
@@ -76,7 +76,6 @@ public class PaypalController {
                     return ResponseEntity.ok(Map.of("approvalUrl", link));
                 }
             }
-//        đổi này lại thành PayPalRESTException
         } catch (PayPalRESTException e){
 //            Nếu có lỗi (PayPalRESTException), ghi log và chuyển hướng đến /payment/error.
             log.error(e.getMessage());

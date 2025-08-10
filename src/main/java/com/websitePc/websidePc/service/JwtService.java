@@ -103,9 +103,6 @@ public class JwtService {
 //      It's cast to UserDetails which contains user information like email, password, roles
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 
-//        Sử dụng {} để chèn tham số, tránh nối chuỗi (concatenation) làm giảm hiệu suất.
-//        log.info: Ghi log cấp độ thông tin, phù hợp cho các sự kiện quan trọng như tạo token
-//        ghi log thông tin người dùng để theo dõi quá trình tạo token
 
         Date now = new Date(); //time of token creation
         Date expiryDate = new Date(now.getTime() + expirationMs); //time of token expiration
@@ -136,10 +133,6 @@ public class JwtService {
         return email!= null && email.equals(userDetails.getUsername());
     }
 
-    public boolean isValidToken(String token) {
-        return extractAllClaims(token) != null;
-    }
-
     public String extractEmailFromToken(String token) {
         Claims claims = extractAllClaims(token);
         if(claims != null) {
@@ -160,8 +153,6 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         Claims claims = null;
-//        ở đây mình dùng khối try thôi
-
         try {
             claims = Jwts.parser()
 //                   Validates token signature

@@ -7,7 +7,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        //        Intercept the request
+        // Intercept the request
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String email;
@@ -64,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     throw new ApplicationException("TOKEN_INVALID", "Token is blacklisted");
                 }
 
-                //      Việc kiểm tra token có hợp lệ hay không sẽ được thực hiện trong JwtService
+                // Việc kiểm tra token có hợp lệ hay không sẽ được thực hiện trong JwtService
                 email = jwtService.extractEmailFromToken(jwt);
 
                 // If the email != null and the user is not authenticated

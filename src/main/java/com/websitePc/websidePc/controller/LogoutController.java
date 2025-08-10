@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 //vì logout cần xác thực người dùng đã đăng nhập, nên tách ra khỏi AuthController
-//logout tuy cần token nhưng ban đầu nó gửi prelight để xem có cross hay không nên
-// nên trong securityConfig mình phải cho nó permitAll()
+//logout tuy cần token nhưng ban đầu nó gửi prelight có method là OPTIONS để xem có cross hay không nên
+// nên trong securityConfig mình cho method OPTIONS là permitAll()
 @RestController
 @RequestMapping("/api")
 public class LogoutController {

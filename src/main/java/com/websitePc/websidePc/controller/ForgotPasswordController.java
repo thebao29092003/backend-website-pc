@@ -51,7 +51,6 @@ public class ForgotPasswordController {
                     " for user: " + user.getUserId());
             if(forgotPassword.isPresent()) {
                 forgotPasswordRepository.deleteByForGotId(forgotPassword.get().getForgotPasswordId());
-                forgotPasswordRepository.flush();
             }
             MailBody mailBody =  MailBody.builder()
                     .to(email)

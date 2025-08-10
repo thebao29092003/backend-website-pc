@@ -17,11 +17,9 @@ import java.time.LocalDateTime;
 @Service
 public class ReviewService{
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository) {
+    public ReviewService(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;
-        this.userRepository = userRepository;
     }
 
     public Page<Object[]> getReviewByProductId(Long productId, int page, int size) {

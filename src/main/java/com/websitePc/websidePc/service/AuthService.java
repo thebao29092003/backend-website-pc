@@ -63,8 +63,8 @@ public class AuthService {
 //        System.out.println("Registering user: " + registerRequest.getFullName());
 
 
-        // Tạo một đối tượng User mới từ RegisterRequest
-//        ban là role user còn nếu muốn đăng kí là admin thì đường link đó
+//        Tạo một đối tượng User mới từ RegisterRequest
+//        ban đầu là role user còn nếu muốn đăng kí là admin thì đường link đó
 //        phải được bảo vệ bởi một quyền hạn nhất định
 
         try {
@@ -115,7 +115,7 @@ public class AuthService {
 
 //            store the token in redis
 //            lấy user đã được xác thực từ authentication chứ ko lấy loginRequest vì đã đc xác thực thì
-//            mới luư vào redis
+//            mới lưu vào redis
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 //          lưu access token và refresh token vào redis
             tokenRepository.storeTokens(

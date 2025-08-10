@@ -73,8 +73,8 @@ public class TokenRepository {
     private String getToken(String accessKey) {
 //        Uses Redis' String operations to retrieve the token value
         Object token = redisTemplate.opsForValue().get(accessKey);
-//        If the token is not found, it returns null
 
+//        If the token is not found, it returns null
         return token != null ? token.toString() : null;
     }
 

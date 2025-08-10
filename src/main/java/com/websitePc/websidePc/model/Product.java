@@ -28,6 +28,8 @@ public class Product {
     private LocalDate createDate;
 
 //    mặc định là 0, nếu có thì sẽ là số lượng sản phẩm trong kho
+//    mình ràng buộc nó lớn hơn hoặc bằng 0
+//    click vào chỗ UN trong chỗ cài đặt bảng ở mysql để sửa lại thành "UNSIGNED"
     private Integer productInStock = 0;
 
     @Column(nullable = false)

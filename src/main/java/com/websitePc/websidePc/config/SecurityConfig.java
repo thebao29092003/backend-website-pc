@@ -98,7 +98,7 @@ public class SecurityConfig {
                         .permitAll()
 //                        khi sử dụng .hasRole("ADMIN"), framework tự động thêm tiền tố ROLE_ vào giá trị bạn cung cấp.
 //                        Do đó, hasRole("ADMIN") thực chất kiểm tra vai trò ROLE_ADMIN trong cơ sở dữ liệu.
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Chỉ cho phép người dùng có vai trò ADMIN truy cập vào các endpoint bắt đầu bằng "admin/"
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Chỉ cho phép người dùng có vai trò ADMIN truy cập vào các endpoint bắt đầu bằng "api/admin/"
                         .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các yêu cầu khác
                 )
 

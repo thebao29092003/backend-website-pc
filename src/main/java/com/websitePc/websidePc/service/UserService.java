@@ -5,13 +5,13 @@ import com.websitePc.websidePc.dto.ChangePasswordRequest;
 import com.websitePc.websidePc.exception.ApplicationException;
 import com.websitePc.websidePc.model.User;
 import com.websitePc.websidePc.model.UserProduct;
+import com.websitePc.websidePc.repository.UserProductRepository;
 import com.websitePc.websidePc.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +27,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserProductRepository userProductRepository;
 
     public void toggleAdmin(String userId, String role) {
         userRepository.toggleAdmin(userId, role);
@@ -111,6 +112,7 @@ public class UserService {
 //        được thêm vào
         if(userProduct != null){
             userProduct.setQuantity(userProduct.getQuantity() + quantity);
+            userProductRepository.save(userProduct);
         } else{
             userRepository.insertCartItem(productId, userId, quantity);
         }

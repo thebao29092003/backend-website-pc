@@ -35,11 +35,7 @@ public interface ComponentRepository extends JpaRepository<Component, Long> {
 
     @Modifying
     @Query(value = """
-            INSERT INTO component (
-                                    component_name,
-                                    component_type,
-                                    component_active
-                                  )
+            INSERT INTO component (component_name, component_type, component_active)
             VALUES (:componentName, :componentType, "true")
             """, nativeQuery = true)
     void insertComponent(
@@ -95,11 +91,9 @@ public interface ComponentRepository extends JpaRepository<Component, Long> {
     //    phục vụ cho api chi tiết sản phẩm
     @Query(value = """
         SELECT c.component_name, c.component_type
-        FROM product p
-        left join product_component pc
-        on p.product_id = pc.product_id
-        join component c on c.component_id = pc.component_id
-        where p.product_id = :productId
+        from component c
+        join product_component pc on pc.component_id = c.component_id
+        where pc.product_id = :productId
         """, nativeQuery = true)
     List<Object> findComponentByProductId(Long productId);
 }

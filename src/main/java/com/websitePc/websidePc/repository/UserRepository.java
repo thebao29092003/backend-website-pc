@@ -51,7 +51,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             nativeQuery = true)
     Object getUserTotalSpent(String userId);
 
-    //    nó luôn cố định 12 thàng nên không cần phân trang
+    //    nó luôn trong vòng 3, 6, 12 tháng nên không cần phân trang
     //    AND o.status = "COMPLETED": là order mà user đã thanh toán thành công
     @Query(value = """
                 SELECT
@@ -91,7 +91,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 order by total_orders desc
             """,
             nativeQuery = true)
-    Page<Object[]> findUserByName(@Param("userName") String userName, Pageable pageable);
+    Page<Object[]> findUserByName(String userName, Pageable pageable);
 
     @Query(value = """
                 SELECT

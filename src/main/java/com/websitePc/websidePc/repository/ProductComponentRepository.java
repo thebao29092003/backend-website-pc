@@ -13,10 +13,7 @@ public interface ProductComponentRepository extends JpaRepository<ProductCompone
 //    phục vụ cho việc thêm sản phẩm
     @Modifying
     @Query(value = """
-            INSERT INTO product_component (
-                                    component_id,
-                                    product_id
-                                  )
+            INSERT INTO product_component (component_id, product_id)
             VALUES (:componentId, :productId)
             """, nativeQuery = true)
     void insertProductComponent(
