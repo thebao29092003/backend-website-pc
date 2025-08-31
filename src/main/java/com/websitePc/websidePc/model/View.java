@@ -3,7 +3,7 @@ package com.websitePc.websidePc.model;
 import jakarta.persistence.*;
 
 // view nay khác cart nó khi nhận số lần user đã xem sản phẩm
-// phục vụ cho Ai gợi ý sản phẩm cá nhân hóa
+// phục vụ cho Ai gợi ý sản phẩm cá nhân hóa cho user đã đăng nhập
 @Entity
 public class View {
     @EmbeddedId
