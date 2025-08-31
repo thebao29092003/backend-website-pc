@@ -49,7 +49,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
 //    trả về 5 product có số lượng bán cao nhất trong 3, 6, 12 tháng gần nhất
-    @Query(value = """
+        @Query(value = """
             SELECT
                 p.product_id,
                 p.product_name,
@@ -64,10 +64,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 p.product_id, p.product_name
             ORDER BY
                 total_quantity DESC
-            LIMIT 5;
+            LIMIT :product;
         """,
-            nativeQuery = true)
-    List<Object[]> productBuyMonths(int month);
+                nativeQuery = true)
+        List<Object[]> productBuyMonths(int month, int product);
 
 //   ở đây thanh vì delete thì mình chuyển product_active thành false
 //   để ẩn nó đi khỏi admin và khách hàng nhưng nó vẫn còn trong database
@@ -246,5 +246,20 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Object[]> findProductByName(
             Pageable pageable,
             String productName
+    );
+
+    @Query(value = """
+       SELECT
+            p.product_id,
+            p.product_name,
+            p.product_price,
+            p.product_type,
+            p.product_in_stock
+       FROM product p
+       WHERE p.product_active = "true"
+       """,
+            nativeQuery = true)
+    Page<Object[]> productForAi(
+            Pageable pageable
     );
 }

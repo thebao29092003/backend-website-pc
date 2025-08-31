@@ -62,7 +62,7 @@ public class ProductService {
 
 
     public List<Object[]> productBuyMonths(int month) {
-        return productRepository.productBuyMonths(month);
+        return productRepository.productBuyMonths(month, 5);
     }
 
     public void deleteProductById(Long productId) {
