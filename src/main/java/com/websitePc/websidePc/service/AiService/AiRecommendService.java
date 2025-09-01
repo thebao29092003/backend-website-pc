@@ -1,55 +1,49 @@
 package com.websitePc.websidePc.service.AiService;
 
+import com.websitePc.websidePc.dto.AiDto.ProductAiOutput;
 import com.websitePc.websidePc.service.ToolForAi.AiRecommendTool;
 import com.websitePc.websidePc.dto.AiDto.ChatRecommend;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.MessageWindowChatMemory;
-import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
 import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Service
 public class AiRecommendService {
     private final ChatClient chatClient;
-    private final JdbcChatMemoryRepository jdbcChatMemoryRepository;
     private final AiRecommendTool aiRecommendTool;
 
+//    mình không cần chat memory làm chi cả vì cái này Ai nó đề xuất sản phẩm dựa
+//    vào 2 tool mình đã cũng cấp rồi ko cần lưu lịch sử chat làm giảm hiệu xuất khi phải hồi
     public AiRecommendService(ChatClient.Builder builder,
-                              JdbcChatMemoryRepository jdbcChatMemoryRepository,
                               AiRecommendTool aiRecommendTool
     ) {
 
-        this.jdbcChatMemoryRepository = jdbcChatMemoryRepository;
         this.aiRecommendTool = aiRecommendTool;
-        ChatMemory chatMemory = MessageWindowChatMemory
-                .builder()
-                .chatMemoryRepository(jdbcChatMemoryRepository)
-                .maxMessages(20)
-                .build();
-        this.chatClient = builder
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
-                .build();
+        this.chatClient = builder.build();
     }
 
-    public Flux<String> chatRecommend(ChatRecommend chatRecommend) {
-        SystemMessage systemMessage = new SystemMessage("""
-               You are an expert AI assistant specializing in personalized product recommendations for a PC shop (selling computers, hardware, and accessories). Your primary role is to generate tailored product suggestions based on a user's purchase history and viewed products, including the number of times each product was viewed. Prioritize responding in Vietnamese for all communications. Use a professional, concise tone in all responses. Respond only to queries directly related to product recommendations or related PC shop operations. Ignore or politely decline any questions or topics unrelated to the PC shop, such as general conversations or personal advice. Always base your recommendations on data from available tools, structuring responses with sections like Summary, Recommended Products, and Insights if applicable. If the query is unclear or lacks user data, ask for clarification politely in Vietnamese.
-               """);
+    public List<ProductAiOutput> chatRecommend(ChatRecommend chatRecommend) {
+        Prompt prompt = getPrompt(chatRecommend);
 
-        Prompt prompt = new Prompt(systemMessage);
-
-
+        
         return chatClient
                 .prompt(prompt)
                 .tools(aiRecommendTool)
-                .advisors(
-                        advisorSpec ->
-                                advisorSpec.param(ChatMemory.CONVERSATION_ID, chatRecommend.userId()))
-                .stream()
-                .content();
+                .call()
+                .entity(new ParameterizedTypeReference<List<ProductAiOutput>>() {});
+    }
+
+    private Prompt getPrompt(ChatRecommend chatRecommend) {
+        SystemMessage systemMessage = new SystemMessage("""
+          You are an expert AI assistant for a PC shop, specializing in personalized product recommendations. Generate exactly 5 tailored product suggestions based on user purchase history and viewed products, including view counts. Base recommendations on tool data, structuring output with Recommended Products (prioritize in-stock products).
+          """);
+
+        UserMessage userMessage = new UserMessage("userId: "+ chatRecommend.userId());
+        return new Prompt(systemMessage, userMessage);
     }
 }

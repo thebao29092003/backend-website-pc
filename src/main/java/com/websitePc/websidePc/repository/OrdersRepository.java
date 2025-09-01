@@ -1,5 +1,6 @@
 package com.websitePc.websidePc.repository;
 
+import com.websitePc.websidePc.dto.AiDto.ProductInput;
 import com.websitePc.websidePc.model.Orders;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -101,4 +102,19 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     Orders findOrderByOrderId(String orderId);
 
 
+//    số sản phẩm user đã mua giới hạn tầm 10 sản phẩm mua gần nhất thôi
+//    nếu nhiều quá sợ quá tải
+    @Query(value = """
+            SELECT
+				p.product_id,
+				p.product_type,
+				p.product_in_stock
+            FROM orders o
+            JOIN order_product op ON o.order_id =  op.order_id
+            JOIN product p ON p.product_id = op.product_id
+            WHERE o.user_id = :userId
+			AND p.product_active = 'true'
+            LIMIT 5;
+                """, nativeQuery = true)
+    List<ProductInput> productByUser(String userId);
 }
